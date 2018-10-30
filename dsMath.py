@@ -1,89 +1,87 @@
-class Point:
-    def __init__(self, coor):
-        self.coordonees = coor
+def distancePoints(A,B):
+#    print("c:",A,B)
+    tmp = 0;
+    for i in range(len(A)):
+        tmp += pow(A[i]-B[i],2)
+    return pow(tmp,0.5)
 
-    def print(self):
-        print(self.coordonees)
+def distance(A,B):
+#    print(type(A).__name__)
+#    print(type(B).__name__)
+    if type(A).__name__ == "tuple" and type(B).__name__ == "tuple":
+        return distancePoints(A,B)
+    
+    elif type(A).__name__ == "list":
+        return min([distance(a,B) for a in A])
 
-    def distance(self, point):
-        if(len(point.coordonees) != len(self.coordonees)):
-            raise RuntimeError("Les points ne sont pas de la même dimension, vous ne pouvez pas comparez leur distance")
-        distance = 0
-        for i in range(len(self.coordonees)):
-            distance += pow(self.coordonees[i] - point.coordonees[i],2)
-        return pow(distance,0.5)
+    elif type(B).__name__ == "list":
+        return min([distance(A,b) for b in B])
+"""
+    else:
+        d = float("Inf")
+        for a in A:
+            d = min(d, min([distancePoints(b,a) for b in B]))
+        return d"""
 
-class Classe:
-    def __init__(self):
-        self.objets = []
-        return
-
-    def ajouterObjet(self, o):
-        self.objets.append(o)
-
-    def distance(self, point):
-        mini = 999999999999999
-        for i in range(len(self.objets)):
-            d = self.objets[i].distance(point)
+def distance_tableau(tab):
+    mini = float("Inf")
+    best = None
+    for i in range(len(tab)):
+        for j in range(i+1,len(tab)):
+            d = distance(tab[i],tab[j])
             if d < mini:
                 mini = d
-        return mini
+                best = [tab[i],tab[j]]
 
-    def distance_tableau(self, points):
-        mini = 99999999999
-        index = -1
-        for i in range(len(points)):
-            for j in range(i+1,len(points)):
-                d = self.distance(points[j])
-            
-                if d < mini:
-                    mini = d
-                    index = i
-        return index
+    return best
 
-    def print(self):
-        for o in self.objets:
-            o.print()
-                
-
-def distance_tableau(points):
-    mini = 99999999999
-    index1 = -1
-    index2 = -1
-    for i in range(len(points)):
-        for j in range(i+1,len(points)):
-            d = points[i].distance(points[j])
-
-            if d < mini:
-                mini = d
-                index1 = i
-                index2 = j
-    return (index1, index2)
+def printMatrice(tab):
+    print("|",end='')
+    for i in range(len(tab)):
+        print("    ,"*i,end='')
+        for j in range(i,len(tab)):
+            print("%.2f," % distance(tab[i],tab[j]),end='')
+        print("\b|\n|",end='')
+    print("\b ")
 
 points = [
-    Point((0,4)),
-    Point((1,1)),
-    Point((1,2)),
-    Point((1,5)),
-    Point((3,4)),
-    Point((4,3)),
-    Point((6,2))
+    (0,4),
+    (1,1),
+    (1,2),
+    (1,5),
+    (3,4),
+    (4,3),
+    (6,2)
 ]
 
-gamma = Classe()
+gammas = []
 
-i,j = distance_tableau(points)
-gamma.ajouterObjet(points[i]) #ajouter les points a la classe gamma 1
-gamma.ajouterObjet(points[j])
-points.pop(i) #retirez les points des points qui sont dans une classe
-points.pop(j-1)
+objets = points
 
-while(len(points)):
-    i = gamma.distance_tableau(points)
-    tmp = gamma
-    gamma = Classe()
-    gamma.ajouterObjet(tmp)
-    gamma.ajouterObjet(points[i])
-    points.pop(i)
+printMatrice(objets)
+print("")
 
-gamma.print()
+while len(points) or len(gammas) != 1:
+    closest = distance_tableau(objets)
+#    print(closest)
+    try:
+        points.remove(closest[0])
+    except:
+        pass
+    try:
+        points.remove(closest[1])
+    except:
+        pass
+    try:
+        gammas.remove(closest[0])
+    except:
+        pass
+    try:
+        gammas.remove(closest[1])
+    except:
+        pass
+    gammas += [closest]
+    objets = points + gammas
+
+    printMatrice(objets)
+    print("")
