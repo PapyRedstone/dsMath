@@ -1,13 +1,18 @@
+#import plotly
+#import plotly.offline as py
+#import plotly.figure_factory as ff
+import matplotlib.pyplot as plt
+from scipy.cluster.hierarchy import dendrogram
+#import numpy as np
+from scipy.cluster.hierarchy import linkage
+
 def distancePoints(A,B):
-#    print("c:",A,B)
     tmp = 0;
     for i in range(len(A)):
         tmp += pow(A[i]-B[i],2)
     return pow(tmp,0.5)
 
 def distance(A,B):
-#    print(type(A).__name__)
-#    print(type(B).__name__)
     if type(A).__name__ == "tuple" and type(B).__name__ == "tuple":
         return distancePoints(A,B)
     
@@ -16,12 +21,6 @@ def distance(A,B):
 
     elif type(B).__name__ == "list":
         return min([distance(A,b) for b in B])
-"""
-    else:
-        d = float("Inf")
-        for a in A:
-            d = min(d, min([distancePoints(b,a) for b in B]))
-        return d"""
 
 def distance_tableau(tab):
     mini = float("Inf")
@@ -44,7 +43,7 @@ def printMatrice(tab):
         print("\b|\n|",end='')
     print("\b ")
 
-points = [
+"""points = [
     (0,4),
     (1,1),
     (1,2),
@@ -52,7 +51,45 @@ points = [
     (3,4),
     (4,3),
     (6,2)
+]"""
+
+
+points=[
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,),
+    (,,,,,,,,)
 ]
+
+dist_mat = points
+linkage_matrix = linkage(dist_mat,"ward")
+dendrogram(linkage_matrix)
+plt.show()
 
 gammas = []
 
@@ -63,7 +100,6 @@ print("")
 
 while len(points) or len(gammas) != 1:
     closest = distance_tableau(objets)
-#    print(closest)
     try:
         points.remove(closest[0])
     except:
@@ -85,3 +121,5 @@ while len(points) or len(gammas) != 1:
 
     printMatrice(objets)
     print("")
+
+
